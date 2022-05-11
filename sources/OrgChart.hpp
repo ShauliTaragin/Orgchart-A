@@ -7,6 +7,7 @@
 #include <stdexcept>
 #include <vector>
 #include <stack>
+#include <queue>
 using namespace std;
 
 namespace ariel{
@@ -32,8 +33,7 @@ namespace ariel{
         OrgChart & add_root(T root_data){
             //if the org chart is empty
             if(this->p_root == nullptr){
-                Node new_root = Node(root_data);
-                this->p_root = & new_root;
+                this->p_root= new Node(root_data);
             }
             //there is a root already in the orgchart
             else{
@@ -56,11 +56,11 @@ namespace ariel{
                 if(temp->data == parent_data){
                     parent_found = true;
                     //add node to parent's sons
-                    Node new_node = Node(son_data);
-                    temp->sons.push_back(&new_node);
+                    Node * new_node = new Node(son_data);
+                    temp->sons.push_back(new_node);
                     //point parent of son
                     //check this works
-                    (&new_node)->father = temp;
+                    (new_node)->father = temp;
                     break;
                 }
                 //add all temps sons
@@ -91,7 +91,7 @@ namespace ariel{
             // 2 is preorder
         private:
             Node * pointer_to_node;
-            stack<Node *> lvl_o_stk;
+            queue<Node *> lvl_o_que;
             int order_type;
         public:
             /**
@@ -108,7 +108,7 @@ namespace ariel{
                         //check what case are we on
                         if (order_type == 0) {//level order
                             for (auto & son : pointer_to_node->sons) {
-                                lvl_o_stk.push(son);
+                                lvl_o_que.push(son);
                             }
                         } else if (order_type == 1) {//reverse level order
 
@@ -133,29 +133,31 @@ namespace ariel{
                 //not sure how to do this operator
                 // i think i will have to work with getting the index of the son somehow
                 //pointer_to_node = pointer_to_node->sons[0];
-
-                if(order_type == 0 ){//level order
-                    //move pointer to next
-                    pointer_to_node = lvl_o_stk.top();
-                    lvl_o_stk.pop();
-                    //add sons of new pointer to stack
-                    if (pointer_to_node!= nullptr){
-                        if (!pointer_to_node->sons.empty()){
-                            for (auto & son : pointer_to_node->sons) {
-                                lvl_o_stk.push(son);
+                if(!lvl_o_que.empty()) {
+                    if (order_type == 0) {//level order
+                        //move pointer to next
+                        pointer_to_node = lvl_o_que.front();
+                        lvl_o_que.pop();
+                        //add sons of new pointer to stack
+                        if (pointer_to_node != nullptr) {
+                            if (!pointer_to_node->sons.empty()) {
+                                for (auto &son: pointer_to_node->sons) {
+                                    lvl_o_que.push(son);
+                                }
                             }
                         }
                     }
-                }
-                else if(order_type ==1){//reverse level order
+                    else if (order_type == 1) {//reverse level order
 
-                }
-                else{//preorder
+                    }
+                    else {//preorder
 
+                    }
+                    return *this;
                 }
+                pointer_to_node = nullptr;
                 return *this;
             }
-
             bool operator==(const iterator& rhs) const {
                 return pointer_to_node == rhs.pointer_to_node;
             }
