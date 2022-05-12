@@ -80,7 +80,10 @@ namespace ariel {
             return *this;
         }
 
-        friend std::ostream &operator<<(std::ostream &output, const OrgChart &chart);
+        friend ostream & operator<< (ostream& output, const OrgChart& orgChart){
+            output  << "ad";
+            return output;
+        }
 
         //maybe fix the destructor and remove kids as well
         ~OrgChart() {
@@ -158,12 +161,12 @@ namespace ariel {
                 }
             }
 
-            string &operator*() const {
+            T &operator*() const {
                 //return *pointer_to_current_node;
                 return pointer_to_node->data;
             }
 
-            string *operator->() const {
+            T *operator->() const {
                 return &(pointer_to_node->data);
             }
 
