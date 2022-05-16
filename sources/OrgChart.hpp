@@ -27,7 +27,13 @@ namespace ariel {
         OrgChart() {
             p_root = nullptr;
         };
-
+        OrgChart(OrgChart<T> & other){
+            this->p_root = other.p_root;
+        }
+        OrgChart(OrgChart<T> && other) noexcept {
+            this->p_root = other.p_root;
+            other.p_root = nullptr;
+        }
         /**
          * Base function to add/change root of organizational tree
          * @param root_data -> receive the data to input in the tree
@@ -85,9 +91,27 @@ namespace ariel {
             return output;
         }
 
-        //maybe fix the destructor and remove kids as well
+        // destructor iterates through all the kids as well
         ~OrgChart() {
-            delete (p_root);
+            stack<Node *> pre_stack;
+            stack<Node *> pre_que;
+            pre_stack.push(p_root);
+            while (!pre_stack.empty()) {
+                Node *temp = pre_stack.top();
+                pre_stack.pop();
+                if (!temp->sons.empty()) {
+                    for (auto i = temp->sons.size() - 1; i > 0; i--) {
+                        pre_stack.push(temp->sons[i]);
+                    }
+                    pre_stack.push(temp->sons[0]);
+                }
+                pre_que.push(temp);
+            }
+            while(!pre_que.empty()){
+                Node * temper = pre_que.top();
+                pre_que.pop();
+                delete(temper);
+            }
         }
 
         //-------------------------------------------------------------------
@@ -210,6 +234,7 @@ namespace ariel {
             bool operator!=(const iterator &rhs) const {
                 return pointer_to_node != rhs.pointer_to_node;
             }
+
         };
 
         iterator begin_level_order() {
