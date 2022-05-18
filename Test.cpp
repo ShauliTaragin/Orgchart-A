@@ -178,7 +178,7 @@ TEST_CASE ("Case 2 Football Team")
 
             //add another field and check that it works
             CHECK_NOTHROW(chart2.add_sub("Assistant_Coach" , "Water_Boy"));
-
+             cout << chart2 << endl;
             //check default iterator
             for (auto name:chart2)
             {

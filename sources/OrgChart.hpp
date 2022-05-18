@@ -27,13 +27,16 @@ namespace ariel {
         OrgChart() {
             p_root = nullptr;
         };
-        OrgChart(OrgChart<T> & other){
+
+        OrgChart(OrgChart<T> &other) {
             this->p_root = other.p_root;
         }
-        OrgChart(OrgChart<T> && other) noexcept {
+
+        OrgChart(OrgChart<T> &&other) noexcept {
             this->p_root = other.p_root;
             other.p_root = nullptr;
         }
+
         /**
          * Base function to add/change root of organizational tree
          * @param root_data -> receive the data to input in the tree
@@ -86,10 +89,20 @@ namespace ariel {
             return *this;
         }
 
-        friend ostream & operator<< (ostream& output, const OrgChart& orgChart){
-            output  << "ad";
+        friend ostream &operator<<(ostream &output, const OrgChart &orgChart) {
+            PrintTree(output, orgChart.p_root, "", true);
             return output;
         }
+
+        static ostream &PrintTree(ostream &output, Node *p_node, string move, bool last) {
+            output << move + "@= " + p_node->data +"\n";
+            move += last ? "   " : "|  ";
+            for (size_t i = 0; i < p_node->sons.size(); i++) {
+                PrintTree(output, p_node->sons[i], move, i == p_node->sons.size() - 1);
+            }
+            return output;
+        }
+
 
         // destructor iterates through all the kids as well
         ~OrgChart() {
@@ -107,10 +120,10 @@ namespace ariel {
                 }
                 pre_que.push(temp);
             }
-            while(!pre_que.empty()){
-                Node * temper = pre_que.top();
+            while (!pre_que.empty()) {
+                Node *temper = pre_que.top();
                 pre_que.pop();
-                delete(temper);
+                delete (temper);
             }
         }
 
@@ -146,8 +159,7 @@ namespace ariel {
                             for (auto &son: pointer_to_node->sons) {
                                 lvl_o_que.push(son);
                             }
-                        }
-                        else if (order_type == 1){//reverse level order
+                        } else if (order_type == 1) {//reverse level order
                             //in constructor add everything needed to queue 1
                             //in ++ we will move to queue 2 which will be by reverse level order
                             rvrs_que.push(pointer_to_node);
@@ -164,8 +176,7 @@ namespace ariel {
                             }
                             pointer_to_node = rvrs_stack.top();
                             rvrs_stack.pop();
-                        }
-                        else {//preorder
+                        } else {//preorder
                             pre_stack.push(pointer_to_node);
                             while (!pre_stack.empty()) {
                                 Node *temp = pre_stack.top();
@@ -199,7 +210,7 @@ namespace ariel {
                 //not sure how to do this operator
                 // i think i will have to work with getting the index of the son somehow
                 //pointer_to_node = pointer_to_node->sons[0];
-                if (!lvl_o_que.empty() || !rvrs_stack.empty()|| !pre_que.empty()) {
+                if (!lvl_o_que.empty() || !rvrs_stack.empty() || !pre_que.empty()) {
                     if (order_type == 0) {//level order
                         //move pointer to next
                         pointer_to_node = lvl_o_que.front();
@@ -212,12 +223,10 @@ namespace ariel {
                                 }
                             }
                         }
-                    }
-                    else if (order_type == 1) {//reverse level order
+                    } else if (order_type == 1) {//reverse level order
                         pointer_to_node = rvrs_stack.top();
                         rvrs_stack.pop();
-                    }
-                    else {//preorder
+                    } else {//preorder
                         pointer_to_node = pre_que.front();
                         pre_que.pop();
                     }
