@@ -6,7 +6,7 @@
 #include "string"
 using namespace ariel;
 using namespace std;
-TEST_CASE ("Case 1 Objects - Family tree")
+TEST_CASE ("Case 1 - Family tree")
 {
     //create object person for this test
     class Person {
@@ -30,111 +30,113 @@ TEST_CASE ("Case 1 Objects - Family tree")
     Person Daughter("Daughter", 18);
     Person Cousin("Cousin", 15);
 
-    OrgChart<Person> chart1;
-            CHECK_THROWS(chart1.add_sub(Aunt, Son));//no root
-            CHECK_NOTHROW(chart1.add_root(Aunt));
-            CHECK_NOTHROW(chart1.add_root(Great_GrandFather));
-            CHECK_THROWS(chart1.add_sub(Aunt, Son));//root was replaced
-            CHECK_THROWS(chart1.add_sub(Son, Uncle));//no such value
-            CHECK_NOTHROW(chart1.add_sub(Great_GrandFather, Grandfather));
-            CHECK_NOTHROW(chart1.add_sub(Grandfather, Father));
-            CHECK_NOTHROW(chart1.add_sub(Grandfather, Uncle));
-            CHECK_NOTHROW(chart1.add_sub(Grandfather, Aunt));
-            CHECK_THROWS(chart1.add_sub(Cousin, Father));//cousin not added yet
-            CHECK_NOTHROW(chart1.add_sub(Father, Son));
-            CHECK_NOTHROW(chart1.add_sub(Father, Daughter));
-            CHECK_NOTHROW(chart1.add_sub(Uncle, Cousin));
+    OrgChart<string> chart1;
+            CHECK_THROWS(chart1.add_sub(Aunt.name, Son.name));//no root
+            CHECK_NOTHROW(chart1.add_root(Aunt.name));
+            CHECK_NOTHROW(chart1.add_root(Great_GrandFather.name));
+            CHECK_THROWS(chart1.add_sub(Aunt.name, Son.name));//root was replaced
+            CHECK_THROWS(chart1.add_sub(Son.name, Uncle.name));//no such value
+            CHECK_NOTHROW(chart1.add_sub(Great_GrandFather.name, Grandfather.name));
+            CHECK_NOTHROW(chart1.add_sub(Grandfather.name, Father.name));
+            CHECK_NOTHROW(chart1.add_sub(Grandfather.name, Uncle.name));
+            CHECK_NOTHROW(chart1.add_sub(Grandfather.name, Aunt.name));
+            CHECK_THROWS(chart1.add_sub(Cousin.name, Father.name));//cousin not added yet
+            CHECK_NOTHROW(chart1.add_sub(Father.name, Son.name));
+            CHECK_NOTHROW(chart1.add_sub(Father.name, Daughter.name));
+            CHECK_NOTHROW(chart1.add_sub(Uncle.name, Cousin.name));
 
     // test level order
-    vector<Person> lvl_order;
+    vector<string> lvl_order;
     for (auto it = chart1.begin_level_order(); it != chart1.end_level_order(); ++it) {
         lvl_order.push_back(*it);
     }
-            CHECK_EQ(lvl_order.at(0).name, Great_GrandFather.name);
-            CHECK_EQ(lvl_order.at(1).name, Grandfather.name);
-            CHECK_EQ(lvl_order.at(2).name, Father.name);
-            CHECK_EQ(lvl_order.at(3).name, Uncle.name);
-            CHECK_EQ(lvl_order.at(4).name, Aunt.name);
-            CHECK_EQ(lvl_order.at(5).name, Son.name);
-            CHECK_EQ(lvl_order.at(6).name, Daughter.name);
-            CHECK_EQ(lvl_order.at(7).name, Cousin.name);
+            CHECK_EQ(lvl_order.at(0), Great_GrandFather.name);
+            CHECK_EQ(lvl_order.at(1), Grandfather.name);
+            CHECK_EQ(lvl_order.at(2), Father.name);
+            CHECK_EQ(lvl_order.at(3), Uncle.name);
+            CHECK_EQ(lvl_order.at(4), Aunt.name);
+            CHECK_EQ(lvl_order.at(5), Son.name);
+            CHECK_EQ(lvl_order.at(6), Daughter.name);
+            CHECK_EQ(lvl_order.at(7), Cousin.name);
 
 
     lvl_order.clear();
     //add another field and check that it works
     Person Cousin2("Cousin2", 14);
-            CHECK_NOTHROW(chart1.add_sub(Aunt, Cousin2));
+            CHECK_NOTHROW(chart1.add_sub(Aunt.name, Cousin2.name));
 
     //check default iterator
     for (auto person: chart1) {
         lvl_order.push_back(person);
     }
-            CHECK_EQ(lvl_order.at(0).name, Great_GrandFather.name);
-            CHECK_EQ(lvl_order.at(1).name, Grandfather.name);
-            CHECK_EQ(lvl_order.at(2).name, Father.name);
-            CHECK_EQ(lvl_order.at(3).name, Uncle.name);
-            CHECK_EQ(lvl_order.at(4).name, Aunt.name);
-            CHECK_EQ(lvl_order.at(5).name, Son.name);
-            CHECK_EQ(lvl_order.at(6).name, Daughter.name);
-            CHECK_EQ(lvl_order.at(7).name, Cousin.name);
-            CHECK_EQ(lvl_order.at(8).name, Cousin2.name);
+            CHECK_EQ(lvl_order.at(0), Great_GrandFather.name);
+            CHECK_EQ(lvl_order.at(1), Grandfather.name);
+            CHECK_EQ(lvl_order.at(2), Father.name);
+            CHECK_EQ(lvl_order.at(3), Uncle.name);
+            CHECK_EQ(lvl_order.at(4), Aunt.name);
+            CHECK_EQ(lvl_order.at(5), Son.name);
+            CHECK_EQ(lvl_order.at(6), Daughter.name);
+            CHECK_EQ(lvl_order.at(7), Cousin.name);
+            CHECK_EQ(lvl_order.at(8), Cousin2.name);
 
 
     //add another field and check that it works
     Person GreatUncle("GreatUncle", 62);
-            CHECK_NOTHROW(chart1.add_sub(Great_GrandFather, GreatUncle));
+            CHECK_NOTHROW(chart1.add_sub(Great_GrandFather.name, GreatUncle.name));
 
     // test reverse level order
-    vector<Person> rv_lvl_order;
+    vector<string> rv_lvl_order;
     for (auto it = chart1.begin_reverse_order(); it != chart1.reverse_order(); ++it) {
         rv_lvl_order.push_back(*it);
     }
-            CHECK_EQ(rv_lvl_order.at(0).name, Son.name);
-            CHECK_EQ(rv_lvl_order.at(1).name, Daughter.name);
-            CHECK_EQ(rv_lvl_order.at(2).name, Cousin.name);
-            CHECK_EQ(rv_lvl_order.at(3).name, Cousin2.name);
-            CHECK_EQ(rv_lvl_order.at(4).name, Father.name);
-            CHECK_EQ(rv_lvl_order.at(5).name, Uncle.name);
-            CHECK_EQ(rv_lvl_order.at(6).name, Aunt.name);
-            CHECK_EQ(rv_lvl_order.at(7).name, Grandfather.name);
-            CHECK_EQ(rv_lvl_order.at(8).name, GreatUncle.name);
-            CHECK_EQ(rv_lvl_order.at(9).name, Great_GrandFather.name);
+            CHECK_EQ(rv_lvl_order.at(0), Son.name);
+            CHECK_EQ(rv_lvl_order.at(1), Daughter.name);
+            CHECK_EQ(rv_lvl_order.at(2), Cousin.name);
+            CHECK_EQ(rv_lvl_order.at(3), Cousin2.name);
+            CHECK_EQ(rv_lvl_order.at(4), Father.name);
+            CHECK_EQ(rv_lvl_order.at(5), Uncle.name);
+            CHECK_EQ(rv_lvl_order.at(6), Aunt.name);
+            CHECK_EQ(rv_lvl_order.at(7), Grandfather.name);
+            CHECK_EQ(rv_lvl_order.at(8), GreatUncle.name);
+            CHECK_EQ(rv_lvl_order.at(9), Great_GrandFather.name);
 
     // Change root check that still works
     Person GreatGrandma("GreatGrandma", 84);
-            CHECK_NOTHROW(chart1.add_root(GreatGrandma));
+            CHECK_NOTHROW(chart1.add_root(GreatGrandma.name));
 
     //test preorder
-    vector<Person> pre_order;
+    vector<string> pre_order;
     for (auto it = chart1.begin_preorder(); it != chart1.end_preorder(); ++it) {
         pre_order.push_back(*it);
     }
-            CHECK_EQ(pre_order.at(0).name, GreatGrandma.name);
-            CHECK_EQ(pre_order.at(1).name, Grandfather.name);
-            CHECK_EQ(pre_order.at(2).name, Father.name);
-            CHECK_EQ(pre_order.at(3).name, Son.name);
-            CHECK_EQ(pre_order.at(4).name, Daughter.name);
-            CHECK_EQ(pre_order.at(5).name, Uncle.name);
-            CHECK_EQ(pre_order.at(6).name, Cousin.name);
-            CHECK_EQ(pre_order.at(7).name, Aunt.name);
-            CHECK_EQ(pre_order.at(8).name, Cousin2.name);
-            CHECK_EQ(pre_order.at(9).name, GreatUncle.name);
+            CHECK_EQ(pre_order.at(0), GreatGrandma.name);
+            CHECK_EQ(pre_order.at(1), Grandfather.name);
+            CHECK_EQ(pre_order.at(2), Father.name);
+            CHECK_EQ(pre_order.at(3), Son.name);
+            CHECK_EQ(pre_order.at(4), Daughter.name);
+            CHECK_EQ(pre_order.at(5), Uncle.name);
+            CHECK_EQ(pre_order.at(6), Cousin.name);
+            CHECK_EQ(pre_order.at(7), Aunt.name);
+            CHECK_EQ(pre_order.at(8), Cousin2.name);
+            CHECK_EQ(pre_order.at(9), GreatUncle.name);
 
+    //print tree for  convenience
+    cout << chart1 << endl;
     //test arrow operator
     vector<int> arrow_test;
     for (auto it = chart1.begin_preorder(); it != chart1.end_preorder(); ++it) {
-        arrow_test.push_back(it->age);
+        arrow_test.push_back(it->length());
     }
-            CHECK_EQ(arrow_test.at(0), 84);
-            CHECK_EQ(arrow_test.at(1), 65);
-            CHECK_EQ(arrow_test.at(2), 45);
-            CHECK_EQ(arrow_test.at(3), 20);
-            CHECK_EQ(arrow_test.at(4), 18);
-            CHECK_EQ(arrow_test.at(5), 43);
-            CHECK_EQ(arrow_test.at(6), 15);
-            CHECK_EQ(arrow_test.at(7), 43);
-            CHECK_EQ(arrow_test.at(8), 14);
-            CHECK_EQ(arrow_test.at(9), 62);
+            CHECK_EQ(arrow_test.at(0), 12);
+            CHECK_EQ(arrow_test.at(1), 11);
+            CHECK_EQ(arrow_test.at(2), 6);
+            CHECK_EQ(arrow_test.at(3), 3);
+            CHECK_EQ(arrow_test.at(4), 8);
+            CHECK_EQ(arrow_test.at(5), 5);
+            CHECK_EQ(arrow_test.at(6), 6);
+            CHECK_EQ(arrow_test.at(7), 4);
+            CHECK_EQ(arrow_test.at(8), 7);
+            CHECK_EQ(arrow_test.at(9), 10);
 }
 TEST_CASE ("Case 2 Football Team")
 {
@@ -261,101 +263,5 @@ TEST_CASE ("Case 2 Football Team")
             CHECK_EQ(arrow_test.at(11),'T');
             CHECK_EQ(arrow_test.at(12),'H');
 }
-// Testing integers , each son is a product of father*x for some x
-TEST_CASE ("Case 2 Integers")
-{
-    OrgChart<int> chart3;
-            CHECK_THROWS(chart3.add_sub(1,10));//trying to add sub before root for new org
-            CHECK_NOTHROW(chart3.add_root(5));
-            CHECK_NOTHROW(chart3.add_root(1));
-            CHECK_THROWS(chart3.add_sub(5, 2));//5 was replaced
-            CHECK_THROWS(chart3.add_sub(2 , 7));//no such value
-            CHECK_NOTHROW(chart3.add_sub(1 , 2));
-            CHECK_NOTHROW(chart3.add_sub(1 , 3));
-            CHECK_NOTHROW(chart3.add_sub(2 , 4));
-            CHECK_NOTHROW(chart3.add_sub(1 ,5));
-            CHECK_NOTHROW(chart3.add_sub(5 , 25));
-            CHECK_NOTHROW(chart3.add_sub(25 , 250));
-            CHECK_NOTHROW(chart3.add_sub(4 , 8));
-            CHECK_NOTHROW(chart3.add_sub(1, 7));
-            CHECK_THROWS(chart3.add_sub(6 , 8));//no such value
 
-    // test level order
-    vector<int> lvl_order;
-    for (auto it = chart3.begin_level_order(); it != chart3.end_level_order(); ++it)
-    {
-       lvl_order.push_back(*it);
-    }
-            CHECK_EQ(lvl_order.at(0),1);
-            CHECK_EQ(lvl_order.at(1),2);
-            CHECK_EQ(lvl_order.at(2),3);
-            CHECK_EQ(lvl_order.at(3),5);
-            CHECK_EQ(lvl_order.at(4),7);
-            CHECK_EQ(lvl_order.at(5),4);
-            CHECK_EQ(lvl_order.at(6),25);
-            CHECK_EQ(lvl_order.at(7),8);
-            CHECK_EQ(lvl_order.at(8),250);
-
-
-    lvl_order.clear();
-
-    //add another field and check that it works
-            CHECK_NOTHROW(chart3.add_sub(250, 10000));
-
-            CHECK_THROWS(chart3.add_sub(100000, 111111));//no node that fits father
-    //check default iterator
-    for (auto number:chart3)
-    {
-        lvl_order.push_back(number);
-    }
-            CHECK_EQ(lvl_order.at(0),1);
-            CHECK_EQ(lvl_order.at(1),2);
-            CHECK_EQ(lvl_order.at(2),3);
-            CHECK_EQ(lvl_order.at(3),5);
-            CHECK_EQ(lvl_order.at(4),7);
-            CHECK_EQ(lvl_order.at(5),4);
-            CHECK_EQ(lvl_order.at(6),25);
-            CHECK_EQ(lvl_order.at(7),8);
-            CHECK_EQ(lvl_order.at(8),250);
-            CHECK_EQ(lvl_order.at(9),10000);
-
-    // test reverse level order
-    vector<int> rv_lvl_order;
-    for (auto it = chart3.begin_reverse_order(); it != chart3.reverse_order(); ++it)
-    {
-        rv_lvl_order.push_back(*it);
-    }
-            CHECK_EQ(rv_lvl_order.at(0),10000);
-            CHECK_EQ(rv_lvl_order.at(1),8);
-            CHECK_EQ(rv_lvl_order.at(2),250);
-            CHECK_EQ(rv_lvl_order.at(3),4);
-            CHECK_EQ(rv_lvl_order.at(4),25);
-            CHECK_EQ(rv_lvl_order.at(5),2);
-            CHECK_EQ(rv_lvl_order.at(6),3);
-            CHECK_EQ(rv_lvl_order.at(7),5);
-            CHECK_EQ(rv_lvl_order.at(8),7);
-            CHECK_EQ(rv_lvl_order.at(9),1);
-
-    // Change root check that still works
-            CHECK_NOTHROW(chart3.add_root(int(1.2)));
-
-    //test preorder
-    vector<int> pre_order;
-    for (auto it = chart3.begin_preorder(); it != chart3.end_preorder(); ++it)
-    {
-        pre_order.push_back(*it);
-    }
-            CHECK_EQ(pre_order.at(0),1);
-            CHECK_EQ(pre_order.at(1),2);
-            CHECK_EQ(pre_order.at(2),4);
-            CHECK_EQ(pre_order.at(3),8);
-            CHECK_EQ(pre_order.at(4),3);
-            CHECK_EQ(pre_order.at(5),5);
-            CHECK_EQ(pre_order.at(6),25);
-            CHECK_EQ(pre_order.at(7),250);
-            CHECK_EQ(pre_order.at(8),10000);
-            CHECK_EQ(pre_order.at(9),7);
-
-
-}
 
