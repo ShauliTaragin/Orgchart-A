@@ -30,7 +30,7 @@ TEST_CASE ("Case 1 - Family tree")
     Person Daughter("Daughter", 18);
     Person Cousin("Cousin", 15);
 
-    OrgChart<string> chart1;
+    OrgChart chart1;
             CHECK_THROWS(chart1.add_sub(Aunt.name, Son.name));//no root
             CHECK_NOTHROW(chart1.add_root(Aunt.name));
             CHECK_NOTHROW(chart1.add_root(Great_GrandFather.name));
@@ -141,7 +141,7 @@ TEST_CASE ("Case 1 - Family tree")
 TEST_CASE ("Case 2 Football Team")
 {
     //checking string
-    OrgChart<string> chart2;
+    OrgChart chart2;
             CHECK_NOTHROW(chart2.add_root("Owner"));
             CHECK_NOTHROW(chart2.add_root("New_Owner"));
             CHECK_THROWS(chart2.add_sub("Owner" , "General Manager"));//Owner was replaced
